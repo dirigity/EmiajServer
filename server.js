@@ -10,7 +10,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, 'client')));
+app.use("/", express.static(path.join(__dirname, 'client')));
 
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
@@ -37,9 +37,9 @@ app.post('/subscribe', (req, res) => {
         .catch(error => console.error(error));
 });
 
-const time = 1000;
+const time = 30000;
 
-function save(){
+function save() {
     writeStream = fs.createWriteStream("serverPersistence.json")
     let data = {
         "subscriptions": subscriptions
@@ -48,21 +48,29 @@ function save(){
     writeStream.end();
 }
 
-function load(){
+function load() {
     // todo
     let data = JSON.parse(fs.readFileSync("serverPersistence.json"))
     subscriptions = data.subscriptions;
 }
 load()
 
-function nofifyAll(payload){
-    for (let s = 0; s < subscriptions.length; s++) {
-        webPush.sendNotification(subscriptions[s], payload)
-            .catch(error => console.error(error));
+
+function nofifyAll(payload) {
+    for (let i = 0; i < subscriptions.length; i++) {
+        webPush.sendNotification(subscriptions[i], payload)
+            .catch(err=>{
+                console.error(err)
+                subscriptions.splice(i,1)
+                i--
+            })
+         
     }
+
+    save();
 }
 
-function tick(){
+function tick() {
     nofifyAll(JSON.stringify({
         title: 'tick',
         content: 'goes the clock'
