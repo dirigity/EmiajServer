@@ -15,6 +15,8 @@ app.use("/", express.static(path.join(__dirname, 'client')));
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
+const PingPeriod = 1000;
+
 webPush.setVapidDetails('mailto:test@example.com', publicVapidKey, privateVapidKey);
 
 subscriptions = [];
@@ -24,20 +26,49 @@ app.post('/subscribe', (req, res) => {
 
     res.status(201).json({});
 
+    // remove links with the same id
+
+    let NewSubs = []
+
+    for (let i in subscriptions) {
+        if (subscriptions[i].id != subscription.id) {
+            NewSubs.push(subscriptions[i])
+        }
+    }
+    subscriptions = NewSubs;
+
+    // add current link
+
     subscriptions.push(req.body)
 
     save()
 
+    // give feedback to client
+
     const payload = JSON.stringify({
-        title: 'Subscription',
-        content: 'The subscription was successful'
+        pushPurpose: "Conection established"
     });
 
     webPush.sendNotification(subscription, payload)
         .catch(error => console.error(error));
 });
 
-const time = 30000;
+app.get('/GetId', (req, res) => {
+    let id = 0;
+
+    console.log("New id querry")
+
+    for (i in subscriptions) {
+        id = Math.max(id, subscriptions[i].id)
+    }
+    id++
+    console.log("choosen id:", id)
+
+    //res.sendStatus(200);
+    res.json(JSON.stringify({ "id": id }))
+});
+
+const time = 5000;
 
 function save() {
     writeStream = fs.createWriteStream("serverPersistence.json")
@@ -58,22 +89,22 @@ load()
 
 function nofifyAll(payload) {
     for (let i = 0; i < subscriptions.length; i++) {
-        webPush.sendNotification(subscriptions[i], payload)
-            .catch(err=>{
-                console.error(err)
-                subscriptions.splice(i,1)
+        webPush.sendNotification(subscriptions[i].link, payload)
+            .catch(err => {
+                subscriptions.splice(i, 1)
                 i--
-            })
-         
-    }
+                console.log("forgoten expired subscription")
 
+            })
+    }
     save();
 }
 
 function tick() {
     nofifyAll(JSON.stringify({
         title: 'tick',
-        content: 'goes the clock'
+        content: 'goes the clock',
+        pushPurpose: "Notification"
     }));
 
     setTimeout(tack, time);
@@ -82,15 +113,30 @@ function tick() {
 function tack() {
     nofifyAll(JSON.stringify({
         title: 'tack',
-        content: 'goes the clock'
+        content: 'goes the clock',
+        pushPurpose: "Notification"
+
     }));
 
     setTimeout(tick, time);
 }
 
+
+
 tick()
 
-app.set('port', process.env.PORT || 7000);
+app.set('port', process.env.PORT || 8000);
 const server = app.listen(app.get('port'), () => {
     console.log(`Express running → PORT ${server.address().port}`);
 });
+
+// ping 
+
+function ping() {
+    nofifyAll(JSON.stringify({
+        pushPurpose: "Ping"
+    }));
+    setTimeout(ping, PingPeriod)
+}
+
+ping()

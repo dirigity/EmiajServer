@@ -1,25 +1,90 @@
 
 const publicVapidKey = 'BCs48b6RZVRLP_9vxQa0_fpzTNkcMu_ylxfmJLNo3KcY6lD3wnUEFXOQUc_YxUo6vz1Fj9fogCXUXw9iGndmfEM';
 
+const HeartBeatPeriod = 1000;
+const TimeOutTime = 5000;
+
+let lastTouch = -1;
+let subscription;
+
+let id = -1
+
+addEventListener('message', event => {
+    console.log("The client sent me a message: ", event.data);
+    if (event.data.purpose == "Defribilatior") {
+        HeartBeat()
+        id = event.data.id;
+    }
+});
+
 self.addEventListener('push', event => {
     const data = event.data.json();
 
-    self.registration.showNotification(data.title, {
-        body: data.content,
-    });
+    let d = new Date();
+    lastTouch = d.getTime();
+    if (data.pushPurpose == "Notification") {
+        self.registration.showNotification(data.title, {
+            body: data.content,
+        });
+    } else if (data.pushPurpose == "Conection established") {
+        console.log("reconected to server")
+
+    } else if (data.pushPurpose == "Ping") {
+
+    } else {
+        console.log("unkown purpose")
+    }
+
 });
 
-self.addEventListener("pushsubscriptionchange", event => {
-    event.waitUntil(swRegistration.pushManager.subscribe(event.oldSubscription.options)
-        .then(subscription => {
-            console.log(subscription)
-            fetch('/subscribe', {
-                method: 'POST',
-                body: JSON.stringify(subscription),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-        })
-    );
-}, false);
+async function HeartBeat() {
+
+    console.log("bump pumb")
+
+    let d = new Date();
+
+    // check conection
+
+    if (TimeOutTime < d.getTime() - lastTouch) {
+        await relog()
+    }
+
+    setTimeout(HeartBeat, HeartBeatPeriod)
+}
+
+async function relog() {
+    subscription = await this.registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+    });
+    try {
+        await fetch('/subscribe', {
+            method: 'POST',
+            body: JSON.stringify({ "link": subscription, "id": id }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+    } catch (e) {
+        console.log("server is offline")
+        console.error(e)
+    }
+
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = this.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+//self.addEventListener("pushsubscriptionchange", relog, false);
