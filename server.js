@@ -48,8 +48,7 @@ app.post('/subscribe', (req, res) => {
     const payload = JSON.stringify({
         pushPurpose: "Conection established"
     });
-
-    webPush.sendNotification(subscription, payload)
+    webPush.sendNotification(subscription.link, payload)
         .catch(error => console.error(error));
 });
 
@@ -68,7 +67,6 @@ app.get('/GetId', (req, res) => {
     res.json(JSON.stringify({ "id": id }))
 });
 
-const time = 5000;
 
 function save() {
     writeStream = fs.createWriteStream("serverPersistence.json")
@@ -100,6 +98,24 @@ function nofifyAll(payload) {
     save();
 }
 
+app.set('port', process.env.PORT || 8000);
+const server = app.listen(app.get('port'), () => {
+    console.log(`Express running → PORT ${server.address().port}`);
+});
+
+// ping 
+
+function ping() {
+    nofifyAll(JSON.stringify({
+        pushPurpose: "Ping"
+    }));
+    setTimeout(ping, PingPeriod)
+}
+
+ping()
+
+const time = 60000;
+
 function tick() {
     nofifyAll(JSON.stringify({
         title: 'tick',
@@ -121,22 +137,4 @@ function tack() {
     setTimeout(tick, time);
 }
 
-
-
 tick()
-
-app.set('port', process.env.PORT || 8000);
-const server = app.listen(app.get('port'), () => {
-    console.log(`Express running → PORT ${server.address().port}`);
-});
-
-// ping 
-
-function ping() {
-    nofifyAll(JSON.stringify({
-        pushPurpose: "Ping"
-    }));
-    setTimeout(ping, PingPeriod)
-}
-
-ping()

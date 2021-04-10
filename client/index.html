@@ -4,23 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Push Notifications using Node.js and Web Push</title>
-    <link rel="icon" type="image/png" href="https://d2cy1obokpvee9.cloudfront.net/manifest/favicon-196x196.png"
-        sizes="196x196" class="next-head">
     <link rel="stylesheet" href="style.css">
+    <title>Emiaj Terminal</title>
 </head>
 
-<body>
-    <header>
-        <h1>Web Push Notifications Subscription Page</h1>
-    </header>
+<body onload="triggerPushNotification()">
+    <div id="padlock">
+        <div id="padlockTitle">
+            <canvas id="padlockTitleCanvas"></canvas>
+        </div>
+        <div class="display" style=" 
+            grid-column: 1 /3;
+            grid-row: 3;
+        "></div>
+        <div class="display" style=" 
+            grid-column: 1 /3;
+            grid-row: 4;
+        "></div>
+        <div class="display" style=" 
+            grid-column: 1 /3;
+            grid-row: 5;
+        "></div>
 
-    <div class="buttons">
-        <button class="trigger-push">Subscribe to Push Notification</button>
+        <div class="input" style=" 
+            grid-column: 3;
+            grid-row: 3;
+        "></div>
+        <div class="input" style=" 
+            grid-column: 3;
+            grid-row: 4;
+        "></div>
+        <div class="input" style=" 
+            grid-column: 3;
+            grid-row: 5;
+        "></div>
+
+
     </div>
+    <img id="PredatorPalete" src="PredatorStokes.svg" onLoad="padlockOnLoad()" style="display: none;"></img>
+    <script src="notificationLogin.js"></script>
+    <script src="padlock.js"></script>
+    <script src="predatorDigits.js"></script>
 
-    <script src="main.js"></script>
+    <script>
+        window.onLoad = () => {
+            triggerPushNotification()
+        }
+    </script>
+
 </body>
 
 </html>

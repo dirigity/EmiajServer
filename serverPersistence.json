@@ -1,15 +1,1 @@
-{
-    "subscriptions": [
-        {
-            "link": {
-                "endpoint": "https://fcm.googleapis.com/fcm/send/dELbZQ1LWRY:APA91bHBlTN_Tf2DpHpJXPEAluadq579hbpXCM4uNzvmhXJuksJv89WjJzPGWRTM6Vfn__NwOnIep6uMI6Lfw1SQRSQ6YodRUrJZj4pXu7s0AWdbLhA1niF6ThUgdaxK63r01S1UfD3A",
-                "expirationTime": null,
-                "keys": {
-                    "p256dh": "BNniVyF36IDmwLtfsKx-v3rP56i5uySMnEdjMXQsUTlLs5U9uoStpR_zKtCNMmGbP1uEeLij6a9R3euL3ox5ng8",
-                    "auth": "8mKju6_2ui9a1KSW8Me2bQ"
-                }
-            },
-            "id": 1
-        }
-    ]
-}
+{"subscriptions":[{"link":{"endpoint":"https://fcm.googleapis.com/fcm/send/f-2zL95h424:APA91bEBbpHFc14w6TGz2xGFUgfmmM4GfFsLqXG58Zii1ODDGLpt3iZA5-1kT0lQgaiEd0CdRpmgy1z0hPLT1gCKf6Rkmhe2TpcizD6QhUEbU1eXbTgeiU5weAXETd-kglwDHhGHxEe9","expirationTime":null,"keys":{"p256dh":"BPRP4Lr0VcCrE-qRVI50H7bGMy__6wOwyyFwvWlztXxLFN7ioOrsDhKKXqc3UTZbkNcsjhMVFfrWtubx-0r0ROs","auth":"M_B3m4RK9maiAzXwCS9epg"}},"id":1}]}

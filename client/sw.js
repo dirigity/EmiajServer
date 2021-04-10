@@ -12,8 +12,10 @@ let id = -1
 addEventListener('message', event => {
     console.log("The client sent me a message: ", event.data);
     if (event.data.purpose == "Defribilatior") {
-        HeartBeat()
-        id = event.data.id;
+        if (id == -1) {
+            HeartBeat()
+            id = event.data.id;
+        }
     }
 });
 
