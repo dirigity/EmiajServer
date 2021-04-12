@@ -13,8 +13,10 @@ addEventListener('message', event => {
     console.log("The client sent me a message: ", event.data);
     if (event.data.purpose == "Defribilatior") {
         if (id == -1) {
-            HeartBeat()
             id = event.data.id;
+            let d = new Date();
+            lastTouch = d.getTime();
+            HeartBeat()
         }
     }
 });
@@ -72,7 +74,6 @@ async function relog() {
         console.log("server is offline")
         console.error(e)
     }
-
 }
 
 function urlBase64ToUint8Array(base64String) {
