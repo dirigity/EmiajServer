@@ -66,7 +66,7 @@ function newSubscription_(subscription){
 }
 
 function save() {
-    writeStream = fs.createWriteStream("serverPersistence.json")
+    writeStream = fs.createWriteStream("./ServerData/serverPersistence.json")
     let data = {
         "subscriptions": subscriptions
     }
@@ -76,7 +76,7 @@ function save() {
 
 function load() {
     // todo
-    let data = JSON.parse(fs.readFileSync("serverPersistence.json"))
+    let data = JSON.parse(fs.readFileSync("./ServerData/serverPersistence.json"))
     subscriptions = data.subscriptions;
 }
 

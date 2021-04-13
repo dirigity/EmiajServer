@@ -7,6 +7,10 @@ const path = require('path');
 const Push = require("./PushNotifications")
 Push.init()
 
+
+const Trainer = require("./PersonalTrainer")
+Trainer.init()
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -89,7 +93,7 @@ app.get('/PassAnsw', (req, res) => {
 
 app.post('/subscribe', (req, res) => {
     res.status(201).json({});
-    
+
     Push.newSubscription(req.body)
 });
 
