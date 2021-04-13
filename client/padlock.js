@@ -9,11 +9,10 @@ function padlockOnLoad() {
     canvasTitle.width = canvasTitle.clientWidth * 2
 
     //console.log(canvasTitle.height, canvasTitle.width)
-    ctx.fillStyle = "rgb(0,0,0)"
-    ctx.fillRect(0, 0, canvasTitle.width, canvasTitle.height)
+    ctx.clearRect(0, 0, canvasTitle.width, canvasTitle.height)
 
     //ctx.filter = "drop-shadow(0px 0px 10px rgb(70,70,70))"
-    let emiaj = [95, 955, 1003, 995, 795, 255, 187, 235, 227, 27]// [56, 224, 64, 160, 132]
+    let emiaj = [56, 224, 64, 160, 132]
 
     Disp = document.getElementById("padlockDispCanvas")
     let ctxD = Disp.getContext('2d')
@@ -21,8 +20,10 @@ function padlockOnLoad() {
     Disp.height = Disp.clientHeight * 2
     Disp.width = Disp.clientWidth * 2
 
-    drawText([0, 0, 0, 0], Disp.width / 2, Disp.height / 4, Disp.height / 2, Disp.width, ctxD, 30)
-    drawText([0, 0, 0, 0], Disp.width / 2, Disp.height * 3 / 4, Disp.height / 2, Disp.width, ctxD, 30)
+    let FULL = Math.pow(2, 11) - 1
+
+    drawText([FULL, FULL, FULL, FULL], Disp.width / 2, Disp.height * 1.1 / 4, Disp.height / 2.1, Disp.width / 1.5, ctxD, 30)
+    drawText([FULL, FULL, FULL, FULL], Disp.width / 2, Disp.height * 2.9 / 4, Disp.height / 2.1, Disp.width / 1.5, ctxD, 30)
 
 
     Inpt = document.getElementById("padlockInptCanvas")
@@ -31,11 +32,11 @@ function padlockOnLoad() {
     Inpt.height = Inpt.clientHeight * 2
     Inpt.width = Inpt.clientWidth * 2
 
-    drawText([7, 7, 7, 7], Inpt.width / 2, Inpt.height / 2, Inpt.height, Inpt.width, ctxI, 30)
+    drawText([FULL, FULL, FULL, FULL], Inpt.width / 2, Inpt.height / 2, Inpt.height, Inpt.width, ctxI, 30)
 
 
 
-    slowDrawText(emiaj, canvasTitle.width / 2, canvasTitle.height / 2, canvasTitle.height, canvasTitle.width, ctx, 0, 0, startLogIn)
+    slowDrawText(emiaj, canvasTitle.width / 2, canvasTitle.height / 2, canvasTitle.height * 0.8, canvasTitle.width * 0.8, ctx, 0, 0, startLogIn)
 
 }
 
@@ -57,8 +58,8 @@ async function startLogIn() {
                 Disp.height = Disp.clientHeight * 2
                 Disp.width = Disp.clientWidth * 2
 
-                slowDrawText(t1, Disp.width / 2, Disp.height / 4, Disp.height / 2, Disp.width, ctx, 30, 0, () => { })
-                slowDrawText(t2, Disp.width / 2, Disp.height * 3 / 4, Disp.height / 2, Disp.width, ctx, 30, 0, () => { })
+                slowDrawText(t1, Disp.width / 2, Disp.height * 1.1 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => { })
+                slowDrawText(t2, Disp.width / 2, Disp.height * 2.9 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => { })
 
             } else {
                 alert("Server didnt cooperate, try again in 5 mins")

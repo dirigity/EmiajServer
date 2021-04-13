@@ -9,8 +9,10 @@ let data;
 function tick() {
 
     let d = new Date()
+    console.log("[Trainer]: aviability ", GetAviability())
     if (GetAviability()) {
-        if (d.getTime - LastExTime > data.actions[lastExCode].timeOutMins * 60 * 1000) {
+        if (d.getTime() - LastExTime > data.actions[lastExCode].timeOutMins * 60 * 1000) {
+            console.log("[Trainer]: sending push ")
             lastExCode++
             LastExTime = d.getTime()
             Push.nofifyAll({
@@ -36,7 +38,7 @@ function GetWeekDay() {
 
 function getCurrentTime() {
     let d = new Date();
-    return { "h": d.getHours, "m": d.getMinutes }
+    return { "h": d.getHours(), "m": d.getMinutes() }
 }
 
 function timeA_gt_B(A, B) {
@@ -60,6 +62,7 @@ function GetAviability() {
     let day = GetWeekDay()
     let range = data.aviability[day]
     let time = getCurrentTime()
+    console.log(day, range, time)
     if (timeA_gt_B(time, range.start) && timeA_gt_B(range.end, time)) {
         return true
     }

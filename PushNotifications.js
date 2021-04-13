@@ -22,6 +22,7 @@ function ping() {
 
 function nofifyAll_(payload) {
     for (let i = 0; i < subscriptions.length; i++) {
+        payload.suposedid = subscriptions[i].id
         webPush.sendNotification(subscriptions[i].link, payload)
             .catch(err => {
                 subscriptions.splice(i, 1)
@@ -43,7 +44,6 @@ function getUnusedId_(){
     console.log("choosen id:", id)
 
     return id
-
 }
 
 function newSubscription_(subscription){
@@ -82,13 +82,13 @@ function load() {
 
 module.exports = {
     "nofifyAll" : (p) => {
-        nofifyAll_(p)
+        return nofifyAll_(p)
     },
     "newSubscription": (s)=>{
-        newSubscription_(s)
+        return newSubscription_(s)
     },
     "getUnusedId" : ()=>{
-        getUnusedId_()
+        return getUnusedId_()
     },
     "init" : () => {
         load()

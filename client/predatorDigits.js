@@ -103,7 +103,7 @@ function drawChar(x, y, desc, h, ctx) {
 
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 != 1) {
-            ctx.strokeStyle = "rgb(40,40,40)"
+            ctx.strokeStyle = "rgb(0,0,0)" // #color 
             drawSeg(trazos[t], x, y, h, ctx)
         } 
 
@@ -113,7 +113,7 @@ function drawChar(x, y, desc, h, ctx) {
     desc = code
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 == 1) {
-            ctx.strokeStyle = "rgb(255,255,255)"
+            ctx.strokeStyle = "rgb(255,255,255)"// #color 
             drawSeg(trazos[t], x, y, h, ctx)
         } 
 
@@ -135,8 +135,7 @@ function drawText(text, Cx, Cy, maxH, maxW, ctx, mar) {
 
     //console.log("h:", h, "w:", w, "Ox", Ox, "Oy", Oy)
 
-    ctx.fillStyle = "rgb(0,0,0)"
-    ctx.fillRect(Cx - maxW / 2, Cy - maxH / 2, maxW, maxH)
+    ctx.clearRect(Cx - maxW / 2, Cy - maxH / 2, maxW, maxH)
 
     for (let i in text) {
         //console.log(Ox + i * w, Oy, text[i], h)
