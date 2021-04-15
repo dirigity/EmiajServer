@@ -61,7 +61,6 @@ function sorten(segment, a) {
 }
 
 function drawSeg(segment, Ox, Oy, h, ctx) {
-
     let scale = h / CharH
 
     ctx.lineWidth = 10
@@ -70,13 +69,23 @@ function drawSeg(segment, Ox, Oy, h, ctx) {
     // console.log(segment)
     segment = sorten(segment, 10)
     // console.log(segment)
+    let ret = { 
+        "start": { 
+            "x": Ox + scale * segment.start.x, 
+            "y": Oy + scale * segment.start.y 
+        },
+        "end":{
+            "x": Ox + scale * segment.end.x,
+            "y": Oy + scale * segment.end.y
+        } 
+    }
 
-    ctx.moveTo(Ox + scale * segment.start.x, Oy + scale * segment.start.y);
-    ctx.lineTo(Ox + scale * segment.end.x, Oy + scale * segment.end.y);
+    ctx.moveTo(ret.start.x, ret.start.y);
+    ctx.lineTo(ret.end.x, ret.end.y);
     //ctx.closePath();
     ctx.stroke();
-    //ctx.closePath();
-    ctx.stroke();
+    // console.log("draw seg",ret)
+    return ret
 }
 
 function step() {
@@ -99,13 +108,14 @@ let trazos = [
 ];
 
 function drawChar(x, y, desc, h, ctx) {
+    let segments = []
     let code = desc;
 
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 != 1) {
-            ctx.strokeStyle = "rgb(0,0,0)" // #color 
-            drawSeg(trazos[t], x, y, h, ctx)
-        } 
+            ctx.strokeStyle = "rgb(00,20,20)" // #color 
+            segments.push(drawSeg(trazos[t], x, y, h, ctx))
+        }
 
         desc /= 2;
         desc = Math.floor(desc)
@@ -113,16 +123,21 @@ function drawChar(x, y, desc, h, ctx) {
     desc = code
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 == 1) {
-            ctx.strokeStyle = "rgb(255,255,255)"// #color 
-            drawSeg(trazos[t], x, y, h, ctx)
-        } 
+            ctx.strokeStyle = "#00bebe"// #color
+            segments.push(drawSeg(trazos[t], x, y, h, ctx))
+        }
 
         desc /= 2;
         desc = Math.floor(desc)
     }
+    // console.log("drawChar",segments)
+
+    return segments
 }
 
 function drawText(text, Cx, Cy, maxH, maxW, ctx, mar) {
+
+    let segs = [];
 
     ctx.lineCap = "round"
     let h = Math.min(maxH, CharH * (((maxW - mar * (text.length - 1)) / text.length) / CharW))
@@ -139,8 +154,12 @@ function drawText(text, Cx, Cy, maxH, maxW, ctx, mar) {
 
     for (let i in text) {
         //console.log(Ox + i * w, Oy, text[i], h)
-        drawChar(Ox + i * (w + mar), Oy, text[i], h, ctx)
+        segs = segs.concat(drawChar(Ox + i * (w + mar), Oy, text[i], h, ctx))
     }
+    // console.log("drawText",segs)
+
+
+    return segs;
 
 }
 
