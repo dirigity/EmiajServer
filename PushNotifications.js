@@ -15,12 +15,14 @@ let subscriptions = [];
 
 function ping() {
     nofifyAll_(JSON.stringify({
-        pushPurpose: "Ping"
+        "pushPurpose": "Ping"
     }));
     setTimeout(ping, PingPeriod)
 }
 
 function nofifyAll_(payload) {
+    // if (payload.pushPurpose != "Ping")
+    //     console.log("push:", payload)
     for (let i = 0; i < subscriptions.length; i++) {
         payload.suposedid = subscriptions[i].id
         webPush.sendNotification(subscriptions[i].link, payload)

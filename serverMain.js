@@ -22,10 +22,6 @@ let ChainedMistakes = 0;
 let AdmisionRequests = []
 let AdmitedClients = []
 let password = process.env.pasword
-
-
-
-
 let digitTranslation = [95, 955, 1003, 995, 795, 255, 187, 235, 227, 27]
 
 app.get('/PassQues', (req, res) => {

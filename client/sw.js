@@ -24,6 +24,8 @@ addEventListener('message', event => {
 self.addEventListener('push', event => {
     const data = event.data.json();
 
+    //console.log("Push: ", data)
+
     let d = new Date();
     lastTouch = d.getTime();
     if (data.pushPurpose == "Notification") {
