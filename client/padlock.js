@@ -4,13 +4,13 @@ function padlockOnLoad() {
 
     console.log("drawing title")
 
-    let canvasTitle = document.getElementById("padlockTitleCanvas")
-    let ctx = canvasTitle.getContext('2d')
-    canvasTitle.height = canvasTitle.clientHeight //* 2
-    canvasTitle.width = canvasTitle.clientWidth //* 2
+    // let canvasTitle = document.getElementById("padlockTitleCanvas")
+    // let ctx = canvasTitle.getContext('2d')
+    // canvasTitle.height = canvasTitle.clientHeight //* 2
+    // canvasTitle.width = canvasTitle.clientWidth //* 2
 
-    //console.log(canvasTitle.height, canvasTitle.width)
-    ctx.clearRect(0, 0, canvasTitle.width, canvasTitle.height)
+    // //console.log(canvasTitle.height, canvasTitle.width)
+    // ctx.clearRect(0, 0, canvasTitle.width, canvasTitle.height)
 
     //ctx.filter = "drop-shadow(0px 0px 10px rgb(70,70,70))"
     let emiaj = [56, 224, 64, 160, 132]
@@ -36,7 +36,7 @@ function padlockOnLoad() {
 
 
 
-    slowDrawText(emiaj, canvasTitle.width / 2, canvasTitle.height / 2, canvasTitle.height * 0.8, canvasTitle.width * 0.8, ctx, 0, 0, startLogIn)
+    //slowDrawText(emiaj, canvasTitle.width / 2, canvasTitle.height / 2, canvasTitle.height * 0.8, canvasTitle.width * 0.8, ctx, 0, 0, startLogIn)
 
 }
 
@@ -185,9 +185,9 @@ async function startLogIn() {
 
 function resizePadlock() {
     //let pad = document.getElementById("padlock")
-    factor = Math.min(window.innerWidth / 500, window.innerHeight / 500)
+    factor = Math.min(window.innerWidth / 500, window.innerHeight / 300)
     XDelta = (window.innerWidth - 500 * factor) / 2;
-    YDelta = (window.innerHeight - 500 * factor) / 2;
+    YDelta = (window.innerHeight - 300 * factor) / 2;
     let transformStr = "matrix(" + factor + ",0,0," + factor + "," + XDelta + "," + YDelta + ")"// matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) "transform: scale(" + factor + ") translate(" + XDelta + "," + YDelta + ")"
     document.getElementById("padlock").style.transform = transformStr
 }
