@@ -95,5 +95,33 @@ module.exports = {
     "init" : () => {
         load()
         ping()
+        tick()
     }
 }
+
+const time = 15000;
+
+function tick() {
+    nofifyAll_(JSON.stringify({
+        title: 'tick',
+        content: 'goes the clock',
+        pushPurpose: "Notification"
+    })); 
+    console.log("tick")
+
+
+    setTimeout(tack, time);
+}
+
+function tack() {
+    nofifyAll_(JSON.stringify({
+        title: 'tack',
+        content: 'goes the clock',
+        pushPurpose: "Notification"
+
+    }));
+    console.log("tack")
+
+    setTimeout(tick, time);
+}
+
