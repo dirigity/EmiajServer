@@ -36,8 +36,8 @@ function padlockOnLoad() {
 
 
 
-    //slowDrawText(emiaj, canvasTitle.width / 2, canvasTitle.height / 2, canvasTitle.height * 0.8, canvasTitle.width * 0.8, ctx, 0, 0, startLogIn)
-
+    //slowDrawText(emiaj, canvasTitle.width / 2, canvasTitle.height / 2, canvasTitle.height * 0.8, canvasTitle.width * 0.8, ctx, 0, 0, )
+    startLogIn()
 }
 
 
