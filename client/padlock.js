@@ -95,9 +95,9 @@ function touchPadClick(e) {
         //console.log(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
         //console.log("d to " + i + " is " + d)
 
-        marker(segments[i].start.x, segments[i].start.y, touchPad.getContext('2d'))
-        marker(segments[i].end.x, segments[i].end.y, touchPad.getContext('2d'))
-        marker(p[0], p[1], touchPad.getContext('2d'))
+        //marker(segments[i].start.x, segments[i].start.y, touchPad.getContext('2d'))
+        //marker(segments[i].end.x, segments[i].end.y, touchPad.getContext('2d'))
+        //marker(p[0], p[1], touchPad.getContext('2d'))
 
         if (d < minDist) {
             closestSeg = i
@@ -119,7 +119,7 @@ function touchPadClick(e) {
     let ctxI = Inpt.getContext('2d')
     drawText(answer, Inpt.width / 2, Inpt.height / 2, Inpt.height * 0.9, Inpt.width * 0.9, ctxI, 30)
 
-    //drawText([current], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0)
+    drawText([current], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0)
 
 }
 

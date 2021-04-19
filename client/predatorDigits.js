@@ -115,6 +115,9 @@ function drawChar(x, y, desc, h, ctx) {
         if (desc % 2 != 1) {
             ctx.strokeStyle = "rgb(00,20,20)" // #color 
             segments.push(drawSeg(trazos[t], x, y, h, ctx))
+        }else{
+            ctx.strokeStyle = "#00bebe"// #color
+            segments.push(drawSeg(trazos[t], x, y, h, ctx))
         }
 
         desc /= 2;
@@ -124,7 +127,7 @@ function drawChar(x, y, desc, h, ctx) {
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 == 1) {
             ctx.strokeStyle = "#00bebe"// #color
-            segments.push(drawSeg(trazos[t], x, y, h, ctx))
+            drawSeg(trazos[t], x, y, h, ctx)
         }
 
         desc /= 2;
