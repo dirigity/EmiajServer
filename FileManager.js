@@ -1,11 +1,22 @@
 const fs = require("fs")
 
 function save_intern(file, data) {
-    fs.writeFileSync(file, JSON.stringify(data));
+    // console.log(file,data)
+    // var stack = new Error().stack
+    // console.log(stack)
+    fs.writeFileSync(file, data);
 }
 
 function load_intern(file) {
-    return JSON.parse(fs.readFileSync(file))
+    return fs.readFileSync(file)
+}
+
+function saveJSON_intern(file, data) {
+    save_intern(file, JSON.stringify(data,null,2));
+}
+
+function loadJSON_intern(file) {
+    return JSON.parse(load_intern(file))
 }
 
 module.exports = {
@@ -14,6 +25,12 @@ module.exports = {
     },
     "load": (file) => {
         return load_intern(file)
+    }, 
+    "saveJSON": (file, data) => {
+        saveJSON_intern(file, data)
+    },
+    "loadJSON": (file) => {
+        return loadJSON_intern(file)
     }
 }
 

@@ -19,18 +19,18 @@ const publicVapidKey = 'BCs48b6RZVRLP_9vxQa0_fpzTNkcMu_ylxfmJLNo3KcY6lD3wnUEFXOQ
 async function triggerPushNotification() {
     if ('serviceWorker' in navigator) {
         //if (navigator.serviceWorker.controller.state != "activated") {
-            console.log("creating worker")
-            const register = await navigator.serviceWorker.register('sw.js', {
-                scope: '/'
-            });
-            fetch('/GetId', {
-                method: 'GET'
-            }).then(function (response) {
-                response.json().then(function (data) {
-                    register.active.postMessage(JSON.parse(JSON.stringify({ "purpose": "Defribilatior", "id": JSON.parse(data).id })));
+        console.log("creating worker")
+        const register = await navigator.serviceWorker.register('sw.js', {
+            scope: '/'
+        });
+        fetch('/GetId', {
+            method: 'GET'
+        }).then(function (response) {
+            response.json().then(function (data) {
+                register.active.postMessage(JSON.parse(JSON.stringify({ "purpose": "Defribilatior", "id": JSON.parse(data).id })));
 
-                });
-            })
+            });
+        })
         // }else{
         //     console.log("worker already exists")
         // }

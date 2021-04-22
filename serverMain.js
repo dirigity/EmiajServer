@@ -1,6 +1,6 @@
 require('dotenv').config({ path: 'variables.env' });
 
-const log = require('Logger.js')
+const log = require('./Logger.js')
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -22,8 +22,9 @@ app.use("/", express.static(path.join(__dirname, 'client')));
 let password = process.env.pasword
 
 app.get('/PassQues', (req, res) => {
-    ChainedMistakes++
-    log("Someone asked for a question")
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
+
+    log("Someone asked for a question, wait time at: ", ServerPersistence.Auth.ChainedMistakes * 500)
 
     let AdmisionAnwsers = []
     let AdmisionQuestions = []
@@ -41,52 +42,58 @@ app.get('/PassQues', (req, res) => {
 
 
     setTimeout(() => {
-        let ServerPersistence = fileMan.load("/ServerData/serverPersistence")
-
-        for (let s in ServerPersistence.Auth.AdmisionRequests) {
-            if (ServerPersistence.Auth.AdmisionRequests[s].key == k) {
-                delete ServerPersistence.Auth.AdmisionRequests[s]
-            }
-        }
-        fileMan.save("/ServerData/serverPersistence", JSON.stringify(ServerPersistence))
-
-    }, 2 * 60 * 1000); // only 2 minutes to anwser
-
-    setTimeout(() => {
-        let ServerPersistence = JSON.parse(fileMan.load("/ServerData/serverPersistence"))        
+        let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
+        ServerPersistence.Auth.ChainedMistakes++
+        let d = new Date();
         ServerPersistence.Auth.AdmisionRequests.push({
             "key": k,
-            "correctAnswer": translate(AdmisionAnwsers)
+            "correctAnswer": translate(AdmisionAnwsers).map(e => { return e[0] }),
+            "time": d.getTime()
         })
 
-        fileMan.save("/ServerData/serverPersistence", JSON.stringify(ServerPersistence))
+        fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 
-        res.json(JSON.stringify({ "q": send, "OK": true })) // send the querrys
+        res.json(JSON.stringify({ "q": send, "key": k, "OK": true })) // send the querrys
 
-    }, ChainedMistakes * 500); // register querry
+    }, ServerPersistence.Auth.ChainedMistakes * 500); // register querry
 
 })
 
-app.get('/PassAnsw', (req, res) => {
+app.post('/PassAnsw', (req, res) => {
     let ans = req.body.ans
     let authorized = false
 
-    for (let s in AdmisionRequests) {
-        if (AdmisionRequests[s].key == req.body.key && arrEq(AdmisionRequests[s].correctAnswer, ans)) {
-            authorized = true
+    console.log("han intentado", ans)
+
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
+
+
+    for (let s in ServerPersistence.Auth.AdmisionRequests) {
+        if (ServerPersistence.Auth.AdmisionRequests[s].key == req.body.key) {
+            if (arrEq(ServerPersistence.Auth.AdmisionRequests[s].correctAnswer, ans)) {
+                authorized = true
+            }
+            ServerPersistence.Auth.AdmisionRequests.splice(s,1)
+            break;
         }
     }
 
     if (authorized) {
+
+        let d = new Date();
+
         Authoritation = key()
-        ChainedMistakes = 0
-        AdmitedClients.push({
-            "key": Authoritation
+        ServerPersistence.Auth.ChainedMistakes = 0
+        ServerPersistence.Auth.AdmitedClients.push({
+            "key": Authoritation,
+            "time": d.getTime()
         })
+
         res.json(JSON.stringify({ "aut": Authoritation, "OK": true }))
     } else {
         res.json(JSON.stringify({ "aut": "", "OK": false }))
     }
+    fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 
 })
 
@@ -141,7 +148,7 @@ function key() {
     const keyLenght = 100;
     const IntToChar = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-        "<", ">", ",", "\"", "%", "&", "/", ".", "-", "_", "`", "^", "+", "*", "{", "}", "_", "]", "[", "#", ":"
+        "<", ">", ",", "%", "&", "/", ".", "-", "_", "`", "^", "+", "*", "{", "}", "_", "]", "[", "#", ":"
     ]
     let ret = ""
 
@@ -152,6 +159,7 @@ function key() {
 }
 
 function arrEq(a, b) {
+    //console.log("comparing", a, b)
     if (a.length != b.length) return false
     for (let i = 0; i < a.length; i++) {
         if (a[i] != b[i]) {
@@ -174,27 +182,27 @@ function translate(word) {
     return ret
 }
 
-//const time = 6000;
+const TimeToLog = 1000 * 10 * 60;
+const SesionTime = 1000 * 60 * 60 * 4;
 
-// function tick() {
-//     Push.nofifyAll(JSON.stringify({
-//         title: 'tick',
-//         content: 'goes the clock',
-//         pushPurpose: "Notification"
-//     }));
+setInterval(() => { // expire sesions and stuff
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
+    let d = new Date();
+    let NewReq = [];
+    for (let i in ServerPersistence.Auth.AdmisionRequests) {
+        if (ServerPersistence.Auth.AdmisionRequests[i].time + TimeToLog > d.getTime()) {
+            NewReq.push(ServerPersistence.Auth.AdmisionRequests[i])
+        }
+    }
+    ServerPersistence.Auth.AdmisionRequests = NewReq
 
-//     setTimeout(tack, time);
-// }
+    let NewAuth = [];
+    for (let i in ServerPersistence.Auth.AdmitedClients) {
+        if (ServerPersistence.Auth.AdmitedClients[i].time + SesionTime > d.getTime()) {
+            NewAuth.push(ServerPersistence.Auth.AdmitedClients[i])
+        }
+    }
+    ServerPersistence.Auth.AdmitedClients = NewAuth
 
-// function tack() {
-//     Push.nofifyAll(JSON.stringify({
-//         title: 'tack',
-//         content: 'goes the clock',
-//         pushPurpose: "Notification"
-
-//     }));
-
-//     setTimeout(tick, time);
-// }
-
-// tick()
+    fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
+}, 1000);

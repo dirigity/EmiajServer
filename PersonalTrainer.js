@@ -35,7 +35,7 @@ function tick() {
 }
 
 function saveToDisk(){
-    fileMan.save("ServerData/ExerciseRutine.json", JSON.stringify(data));
+    fileMan.saveJSON("ServerData/ExerciseRutine.json", data);
 }
 
 function GetWeekDay() {
@@ -74,7 +74,7 @@ function GetAviability() {
 
 module.exports = {
     init: () => {
-        data = JSON.parse(fileMan.load("./ServerData/ExerciseRutine.json"))
+        data = fileMan.loadJSON("ServerData/ExerciseRutine.json")
         tick()
     }
 }

@@ -19,7 +19,7 @@ function ping() {
 }
 
 function nofifyAll_(payload) {
-    let ServerPersistence = fileMan.load("./ServerData/serverPersistence.json")
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
     
     // if (payload.pushPurpose != "Ping")
     //     console.log("push:", payload)
@@ -34,12 +34,12 @@ function nofifyAll_(payload) {
     }
     // console.log("saving2", ServerPersistence, typeof ServerPersistence)
 
-    fileMan.save("./ServerData/serverPersistence.json", ServerPersistence)
+    fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 
 }
 
 function getUnusedId_(){
-    let ServerPersistence = fileMan.load("./ServerData/serverPersistence.json")
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
 
     let id = 0;
 
@@ -55,10 +55,11 @@ function getUnusedId_(){
 function newSubscription_(subscription){
     let NewSubs = []
 
-    let ServerPersistence = fileMan.load("./ServerData/serverPersistence.json")
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
 
     for (let i in ServerPersistence.subscriptions) {
-        if (ServerPersistence.subscriptions[i].id != ServerPersistence.subscription.id && ServerPersistence.subscriptions[i].link.endpoint != ServerPersistence.subscription.link.endpoint) {
+        // console.log("PushNot l61: ", ServerPersistence.subscriptions[i].id, ServerPersistence.subscriptions, i)
+        if (ServerPersistence.subscriptions[i].id != subscription.id && ServerPersistence.subscriptions[i].link.endpoint != ServerPersistence.subscription.link.endpoint) {
             NewSubs.push(ServerPersistence.subscriptions[i])
         }
     }
@@ -71,7 +72,7 @@ function newSubscription_(subscription){
 
     // console.log("saving",ServerPersistence, typeof ServerPersistence)
 
-    fileMan.save("./ServerData/serverPersistence.json", ServerPersistence)
+    fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 }
 
 // function save() {
@@ -102,33 +103,33 @@ module.exports = {
     },
     "init" : () => {
         ping()
-        tick()
+        //tick()
     }
 }
 
-const time = 15000;
+// const time = 15000;
 
-function tick() {
-    nofifyAll_(JSON.stringify({
-        title: 'tick',
-        content: 'goes the clock',
-        pushPurpose: "Notification"
-    })); 
-    console.log("tick")
+// function tick() {
+//     nofifyAll_(JSON.stringify({
+//         title: 'tick',
+//         content: 'goes the clock',
+//         pushPurpose: "Notification"
+//     })); 
+//     console.log("tick")
 
 
-    setTimeout(tack, time);
-}
+//     setTimeout(tack, time);
+// }
 
-function tack() {
-    nofifyAll_(JSON.stringify({
-        title: 'tack',
-        content: 'goes the clock',
-        pushPurpose: "Notification"
+// function tack() {
+//     nofifyAll_(JSON.stringify({
+//         title: 'tack',
+//         content: 'goes the clock',
+//         pushPurpose: "Notification"
 
-    }));
-    console.log("tack")
+//     }));
+//     console.log("tack")
 
-    setTimeout(tick, time);
-}
+//     setTimeout(tick, time);
+// }
 

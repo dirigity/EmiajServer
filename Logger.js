@@ -1,11 +1,11 @@
-const fileMan = require("FileManager.js")
+const fileMan = require("./FileManager.js")
 
 module.exports = (l) => {
     console.log(l)
     let logs = fileMan.load("ServerData/log.txt")
     logs += "\n[" + timeStr() + "]:" + l;
 
-    fileMan("ServerData/log.txt", logs)
+    fileMan.save("ServerData/log.txt", logs)
 }
 
 function timeStr() {

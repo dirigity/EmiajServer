@@ -68,7 +68,7 @@ body {
 
 }
 
-.button {
+/* .button {
 
   text-align: center;
 
@@ -83,7 +83,7 @@ body {
   overflow: hidden;
   outline: none;
   font-family: 'Rajdhani', sans-serif;
-  /* height: 90%; */
+  height: 90%; 
 }
 
 .button:before,
@@ -151,4 +151,4 @@ body {
     height: 200%;
     width: 150%;
   }
-}
+} */

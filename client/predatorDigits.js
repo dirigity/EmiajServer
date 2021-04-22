@@ -60,10 +60,10 @@ function sorten(segment, a) {
 
 }
 
-function drawSeg(segment, Ox, Oy, h, ctx) {
+function drawSeg(segment, Ox, Oy, h, ctx, size) {
     let scale = h / CharH
 
-    ctx.lineWidth = 10
+    ctx.lineWidth = size
     ctx.beginPath();
 
     // console.log(segment)
@@ -107,17 +107,17 @@ let trazos = [
     { start: { "x": 50, "y": 200 }, end: { "x": 100, "y": 150 } }
 ];
 
-function drawChar(x, y, desc, h, ctx) {
+function drawChar(x, y, desc, h, ctx, size) {
     let segments = []
     let code = desc;
 
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 != 1) {
             ctx.strokeStyle = "rgb(00,20,20)" // #color 
-            segments.push(drawSeg(trazos[t], x, y, h, ctx))
+            segments.push(drawSeg(trazos[t], x, y, h, ctx, size))
         }else{
             ctx.strokeStyle = "#00bebe"// #color
-            segments.push(drawSeg(trazos[t], x, y, h, ctx))
+            segments.push(drawSeg(trazos[t], x, y, h, ctx, size))
         }
 
         desc /= 2;
@@ -127,7 +127,7 @@ function drawChar(x, y, desc, h, ctx) {
     for (let t = 0; t < trazos.length; t++) {
         if (desc % 2 == 1) {
             ctx.strokeStyle = "#00bebe"// #color
-            drawSeg(trazos[t], x, y, h, ctx)
+            drawSeg(trazos[t], x, y, h, ctx, size)
         }
 
         desc /= 2;
@@ -138,7 +138,11 @@ function drawChar(x, y, desc, h, ctx) {
     return segments
 }
 
-function drawText(text, Cx, Cy, maxH, maxW, ctx, mar) {
+function drawText(text, Cx, Cy, maxH, maxW, ctx, mar, size) {
+
+    if(!size){
+        size = 10;
+    }
 
     let segs = [];
 
@@ -153,20 +157,21 @@ function drawText(text, Cx, Cy, maxH, maxW, ctx, mar) {
 
     //console.log("h:", h, "w:", w, "Ox", Ox, "Oy", Oy)
 
-    ctx.clearRect(Cx - maxW / 2, Cy - maxH / 2, maxW, maxH)
+    const margin = 0;
+
+    ctx.clearRect(Cx - maxW / 2 - margin, Cy - maxH / 2 - margin, maxW + 2 * margin, maxH + 2 * margin)
 
     for (let i in text) {
         //console.log(Ox + i * w, Oy, text[i], h)
-        segs = segs.concat(drawChar(Ox + i * (w + mar), Oy, text[i], h, ctx))
+        segs = segs.concat(drawChar(Ox + i * (w + mar), Oy, text[i], h, ctx, size))
     }
     // console.log("drawText",segs)
-
 
     return segs;
 
 }
 
-function slowDrawText(text, Cx, Cy, maxH, maxW, ctx, mar, progress, then) {
+function slowDrawText(text, Cx, Cy, maxH, maxW, ctx, mar, progress, then, size) {
 
     let oText = JSON.parse(JSON.stringify({ "a": text })).a;
     let rep = false
@@ -177,10 +182,10 @@ function slowDrawText(text, Cx, Cy, maxH, maxW, ctx, mar, progress, then) {
         }
     }
 
-    drawText(text, Cx, Cy, maxH, maxW, ctx, mar)
+    drawText(text, Cx, Cy, maxH, maxW, ctx, mar, size)
     if (rep)
         setTimeout(() => {
-            slowDrawText(oText, Cx, Cy, maxH, maxW, ctx, mar, progress + 1, then)
+            slowDrawText(oText, Cx, Cy, maxH, maxW, ctx, mar, progress + 1, then, size)
         }, 100);
     else
         then()

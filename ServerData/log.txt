@@ -1,0 +1,70 @@
+
+[2021-04-22 10:46:17]:Someone asked for a question
+[2021-04-22 10:46:23]:Someone asked for a question
+[2021-04-22 10:46:34]:Someone asked for a question
+[2021-04-22 10:46:37]:Someone asked for a question
+[2021-04-22 10:55:19]:Someone asked for a question
+[2021-04-22 11:5:46]:Someone asked for a question
+[2021-04-22 11:6:15]:Someone asked for a question
+[2021-04-22 11:6:22]:Someone asked for a question
+[2021-04-22 11:7:30]:Someone asked for a question
+[2021-04-22 17:18:14]:Someone asked for a question
+[2021-04-22 17:22:10]:Someone asked for a question
+[2021-04-22 17:22:29]:Someone asked for a question
+[2021-04-22 17:22:54]:Someone asked for a question
+[2021-04-22 17:24:3]:Someone asked for a question
+[2021-04-22 17:26:17]:Someone asked for a question
+[2021-04-22 17:26:21]:Someone asked for a question
+[2021-04-22 17:26:25]:Someone asked for a question
+[2021-04-22 17:26:31]:Someone asked for a question
+[2021-04-22 17:26:33]:Someone asked for a question
+[2021-04-22 17:27:29]:Someone asked for a question
+[2021-04-22 17:27:43]:Someone asked for a question
+[2021-04-22 17:27:46]:Someone asked for a question
+[2021-04-22 17:28:20]:Someone asked for a question
+[2021-04-22 17:30:31]:Someone asked for a question
+[2021-04-22 17:32:39]:Someone asked for a question
+[2021-04-22 17:33:15]:Someone asked for a question
+[2021-04-22 17:33:30]:Someone asked for a question
+[2021-04-22 17:34:4]:Someone asked for a question
+[2021-04-22 17:34:15]:Someone asked for a question
+[2021-04-22 17:34:41]:Someone asked for a question
+[2021-04-22 17:35:4]:Someone asked for a question
+[2021-04-22 17:35:20]:Someone asked for a question
+[2021-04-22 18:18:43]:Someone asked for a question
+[2021-04-22 18:19:26]:Someone asked for a question
+[2021-04-22 18:19:38]:Someone asked for a question
+[2021-04-22 18:20:30]:Someone asked for a question
+[2021-04-22 18:20:44]:Someone asked for a question
+[2021-04-22 18:20:53]:Someone asked for a question
+[2021-04-22 18:20:54]:Someone asked for a question
+[2021-04-22 18:21:12]:Someone asked for a question
+[2021-04-22 18:21:19]:Someone asked for a question
+[2021-04-22 18:22:11]:Someone asked for a question
+[2021-04-22 18:22:19]:Someone asked for a question
+[2021-04-22 18:22:27]:Someone asked for a question
+[2021-04-22 18:33:50]:Someone asked for a question
+[2021-04-22 18:33:54]:Someone asked for a question
+[2021-04-22 18:34:21]:Someone asked for a question
+[2021-04-22 18:34:44]:Someone asked for a question
+[2021-04-22 18:36:9]:Someone asked for a question
+[2021-04-22 18:36:44]:Someone asked for a question
+[2021-04-22 18:39:29]:Someone asked for a question
+[2021-04-22 18:40:21]:Someone asked for a question
+[2021-04-22 18:40:25]:Someone asked for a question, wait time at: 
+[2021-04-22 18:40:57]:Someone asked for a question, wait time at: 
+[2021-04-22 18:42:54]:Someone asked for a question, wait time at: 
+[2021-04-22 18:47:55]:Someone asked for a question, wait time at: 
+[2021-04-22 18:48:1]:Someone asked for a question, wait time at: 
+[2021-04-22 18:52:55]:Someone asked for a question, wait time at: 
+[2021-04-22 18:59:14]:Someone asked for a question, wait time at: 
+[2021-04-22 19:0:0]:Someone asked for a question, wait time at: 
+[2021-04-22 19:32:23]:Someone asked for a question, wait time at: 
+[2021-04-22 19:42:3]:Someone asked for a question, wait time at: 
+[2021-04-22 19:43:11]:Someone asked for a question, wait time at: 
+[2021-04-22 19:51:39]:Someone asked for a question, wait time at: 
+[2021-04-22 19:53:28]:Someone asked for a question, wait time at: 
+[2021-04-22 19:55:38]:Someone asked for a question, wait time at: 
+[2021-04-22 19:56:2]:Someone asked for a question, wait time at: 
+[2021-04-22 19:56:12]:Someone asked for a question, wait time at: 
+[2021-04-22 20:0:47]:Someone asked for a question, wait time at: 

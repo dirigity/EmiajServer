@@ -1,6 +1,19 @@
+let currentSel = -1;
+
 let FULL = Math.pow(2, 11) - 1
 let answer = [FULL, FULL, FULL, FULL]
 function padlockOnLoad() {
+
+    currentSel = -1
+    let touchPad = document.getElementById("numberInputState")
+    let ctx = touchPad.getContext('2d')
+    ctx.clearRect(0, 0, touchPad.width, touchPad.height)
+    ctx.fillStyle = "#00bebe"
+    ctx.textAlign = "center";
+    ctx.font = "80px Arial";
+
+    ctx.fillText("Send", touchPad.width / 2, touchPad.height / 1.9);
+
 
     console.log("drawing title")
 
@@ -43,33 +56,33 @@ function padlockOnLoad() {
 
 document.getElementById("padlockInptCanvas").onclick = displayTouch
 
-let currentSel = -1;
 
 function displayTouch(e) {
     let fullWidth = document.getElementById("padlockInptCanvas").clientWidth
     let sel = Math.max(Math.min(Math.floor(6 * e.offsetX / fullWidth), 4), 1) - 1
+
     if (currentSel != sel) {
         currentSel = sel
         let touchPad = document.getElementById("numberInputState")
 
         touchPad.style.display = "block"
-        touchPad.height = 250// touchPad.clientHeight * 2;
-        touchPad.width = 150// touchPad.clientWidth * 2;
-        document.getElementById("buttonState").style.display = "none"
-        document.getElementById("submitButt").classList.remove("button");
-
+        touchPad.height = touchPad.clientHeight * 2;
+        touchPad.width = touchPad.clientWidth * 2;
 
         console.log(touchPad.height, touchPad.width)
 
-        drawText([answer[sel]], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0)
+        drawText([answer[sel]], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0, 30)
 
     } else {
         currentSel = -1
+        let touchPad = document.getElementById("numberInputState")
+        let ctx = touchPad.getContext('2d')
+        ctx.clearRect(0, 0, touchPad.width, touchPad.height)
+        ctx.fillStyle = "#00bebe"
+        ctx.textAlign = "center";
+        ctx.font = "80px Arial";
 
-        document.getElementById("submitButt").classList.add("button");
-
-        document.getElementById("numberInputState").style.display = "none"
-        document.getElementById("buttonState").style.display = "block"
+        ctx.fillText("Send", touchPad.width / 2, touchPad.height / 1.9);
 
     }
 
@@ -78,53 +91,78 @@ function displayTouch(e) {
 document.getElementById("numberInputState").onclick = touchPadClick
 
 function touchPadClick(e) {
-    let current = answer[currentSel]
-    let touchPad = document.getElementById("numberInputState")
+    if (currentSel == -1) {
+        fetch('/PassAnsw', {
+            method: 'POST',
+            body: JSON.stringify({
+                "key": key,
+                "ans": answer
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((res) => {
+            res.json().then((data) => {
+                if(data.OK){
+                    AuthKey = data.aut;
+                    InitAuthComunications()
+                }else{
+                    alert("incorrect answer")
+                    location.reload();
+                }
+            })
+        })
+    } else {
 
-    let segments = drawText([current], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0)
 
-    // console.log(segments)
+        let current = answer[currentSel]
+        let touchPad = document.getElementById("numberInputState")
 
-    let closestSeg = -1
-    let minDist = 10000000000
-    let p = [150 * e.offsetX / touchPad.clientWidth, 250 * e.offsetY / touchPad.clientHeight]
-    //console.log(p)
-    for (let i = 0; i < segments.length; i++) { // the ponter coords are wrong (maybe /2 or something )
+        let segments = drawText([current], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0)
 
-        let d = distToSegment(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
-        //console.log(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
-        //console.log("d to " + i + " is " + d)
+        console.log(segments)
 
-        //marker(segments[i].start.x, segments[i].start.y, touchPad.getContext('2d'))
-        //marker(segments[i].end.x, segments[i].end.y, touchPad.getContext('2d'))
-        //marker(p[0], p[1], touchPad.getContext('2d'))
+        let closestSeg = -1
+        let minDist = 10000000000
+        let p = [e.offsetX * 2, e.offsetY * 2]
+        //console.log(p)
+        for (let i = 0; i < segments.length; i++) { // the ponter coords are wrong (maybe /2 or something )
 
-        if (d < minDist) {
-            closestSeg = i
-            minDist = d
+            let d = distToSegment(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
+            //console.log(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
+            //console.log("d to " + i + " is " + d)
+
+            // marker(segments[i].start.x, segments[i].start.y, touchPad.getContext('2d'))
+            // marker(segments[i].end.x, segments[i].end.y, touchPad.getContext('2d'))
+            // marker(p[0], p[1], touchPad.getContext('2d'))
+
+            if (d < minDist) {
+                closestSeg = i
+                minDist = d
+            }
         }
+
+        let CurrentBin = getBinaryArr(current)
+        CurrentBin[closestSeg] = CurrentBin[closestSeg] == 0 ? 1 : 0
+
+        current = getIntFromBinArr(CurrentBin)
+
+        console.log(CurrentBin)
+
+        answer[currentSel] = current
+        console.log(closestSeg)
+
+        Inpt = document.getElementById("padlockInptCanvas")
+        let ctxI = Inpt.getContext('2d')
+        drawText(answer, Inpt.width / 2, Inpt.height / 2, Inpt.height * 0.9, Inpt.width * 0.9, ctxI, 30)
+
+        drawText([current], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0, 30)
+
     }
-
-    let CurrentBin = getBinaryArr(current)
-    CurrentBin[closestSeg] = CurrentBin[closestSeg] == 0 ? 1 : 0
-
-    current = getIntFromBinArr(CurrentBin)
-
-    console.log(CurrentBin)
-
-    answer[currentSel] = current
-    console.log(closestSeg)
-
-    Inpt = document.getElementById("padlockInptCanvas")
-    let ctxI = Inpt.getContext('2d')
-    drawText(answer, Inpt.width / 2, Inpt.height / 2, Inpt.height * 0.9, Inpt.width * 0.9, ctxI, 30)
-
-    drawText([current], touchPad.width / 2, touchPad.height / 2, touchPad.height * 0.9, touchPad.width * 0.9, touchPad.getContext('2d'), 0)
-
 }
 
 function getBinaryArr(n) {
-    ret = [0, 0, 0, 0, 0, 0, 0, 0,0,0]
+    ret = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for (let i = 0; i < ret.length; i++) {
         ret[i] = n % 2
         n = Math.floor(n / 2)
@@ -152,17 +190,19 @@ function l(w) {
     return Math.sqrt((w[0][0] - w[1][0]) * (w[0][0] - w[1][0]) + (w[0][1] - w[1][1]) * (w[0][1] - w[1][1]))
 }
 
+let key = "none"
 
 async function startLogIn() {
     //console.log("hallo")
     await fetch("/PassQues").then((response) => {
         //console.log("hallo2")
         response.json().then((p) => {
-            console.log(JSON.parse(p))
+            //console.log(JSON.parse(p))
+            let response = JSON.parse(p)
 
-            if (JSON.parse(p).OK) {
-                let t1 = JSON.parse(p).q.map((e) => { return e[0] })
-                let t2 = JSON.parse(p).q.map((e) => { return e[1] })
+            if (response.OK) {
+                let t1 = response.q.map((e) => { return e[0] })
+                let t2 = response.q.map((e) => { return e[1] })
 
                 Disp = document.getElementById("padlockDispCanvas")
                 let ctx = Disp.getContext('2d')
@@ -172,6 +212,9 @@ async function startLogIn() {
 
                 slowDrawText(t1, Disp.width / 2, Disp.height * 1.1 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => { })
                 slowDrawText(t2, Disp.width / 2, Disp.height * 2.9 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => { })
+
+                key = response.key;
+                console.log("key:", key)
 
             } else {
                 alert("Server didnt cooperate, try again in 5 mins")

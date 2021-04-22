@@ -54,7 +54,7 @@ async function HeartBeat() {
     if (TimeOutTime < (d.getTime() - lastTouch)) {
         await relog()
     }else {
-        console.log("last comunication happened ", (d.getTime() - lastTouch), "ms ago")
+        //console.log("last comunication happened ", (d.getTime() - lastTouch), "ms ago")
     }
 
     setTimeout(HeartBeat, HeartBeatPeriod)
