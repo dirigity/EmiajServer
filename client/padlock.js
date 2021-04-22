@@ -103,6 +103,8 @@ function touchPadClick(e) {
             },
         }).then((res) => {
             res.json().then((data) => {
+                data = JSON.parse(data)
+                // console.log(data.OK)
                 if(data.OK){
                     AuthKey = data.aut;
                     InitAuthComunications()

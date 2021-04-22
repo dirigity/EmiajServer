@@ -24,7 +24,7 @@ let password = process.env.pasword
 app.get('/PassQues', (req, res) => {
     let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
 
-    log("Someone asked for a question, wait time at: ", ServerPersistence.Auth.ChainedMistakes * 500)
+    log("Someone asked for a question, wait time at: " + ServerPersistence.Auth.ChainedMistakes * 500)
 
     let AdmisionAnwsers = []
     let AdmisionQuestions = []
@@ -73,7 +73,7 @@ app.post('/PassAnsw', (req, res) => {
             if (arrEq(ServerPersistence.Auth.AdmisionRequests[s].correctAnswer, ans)) {
                 authorized = true
             }
-            ServerPersistence.Auth.AdmisionRequests.splice(s,1)
+            ServerPersistence.Auth.AdmisionRequests.splice(s, 1)
             break;
         }
     }
@@ -183,7 +183,7 @@ function translate(word) {
 }
 
 const TimeToLog = 1000 * 10 * 60;
-const SesionTime = 1000 * 60 * 60 * 4;
+const SesionTime = 1000 * 60 * 60 * 20;
 
 setInterval(() => { // expire sesions and stuff
     let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
