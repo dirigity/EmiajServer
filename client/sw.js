@@ -14,8 +14,8 @@ addEventListener('message', event => {
     if (event.data.purpose == "Defribilatior") {
         if (id == -1) {
             id = event.data.id;
-            let d = new Date();
-            lastTouch = d.getTime();
+            //let d = new Date();
+            //lastTouch = d.getTime();
             HeartBeat()
         }
     }
@@ -51,18 +51,22 @@ async function HeartBeat() {
 
     // check conection
 
-    if (TimeOutTime < d.getTime() - lastTouch) {
+    if (TimeOutTime < (d.getTime() - lastTouch)) {
         await relog()
+    }else {
+        console.log("last comunication happened ", (d.getTime() - lastTouch), "ms ago")
     }
 
     setTimeout(HeartBeat, HeartBeatPeriod)
 }
 
 async function relog() {
+    console.log("atempting reload")
     subscription = await this.registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     });
+    console.log("subscription",subscription)
     try {
         await fetch('/subscribe', {
             method: 'POST',

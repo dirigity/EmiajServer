@@ -1,31 +1,29 @@
 require('dotenv').config({ path: 'variables.env' });
 
+const log = require('Logger.js')
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const https = require('https');
+const fileMan = require("./FileManager.js")
 
 const Push = require("./PushNotifications")
 Push.init()
-
 
 const Trainer = require("./PersonalTrainer")
 Trainer.init()
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // security threat
 
 app.use("/", express.static(path.join(__dirname, 'client')));
 
-
-let ChainedMistakes = 0;
-let AdmisionRequests = []
-let AdmitedClients = []
 let password = process.env.pasword
-let digitTranslation = [95, 955, 1003, 995, 795, 255, 187, 235, 227, 27]
 
 app.get('/PassQues', (req, res) => {
-    console.log("PassQuest request")
+    ChainedMistakes++
+    log("Someone asked for a question")
 
     let AdmisionAnwsers = []
     let AdmisionQuestions = []
@@ -37,74 +35,36 @@ app.get('/PassQues', (req, res) => {
         AdmisionAnwsers.push(a)
     }
 
-    let send = []
-
-    for (let i in AdmisionQuestions) {
-        let translation = []
-        for (let c in AdmisionQuestions[i] + "") {
-            translation.push(digitTranslation[Number.parseInt((AdmisionQuestions[i] + "")[c])])
-        }
-        send.push(translation)
-    }
+    let send = translate(AdmisionQuestions)
 
     let k = key()
 
+
     setTimeout(() => {
-        for (let s in AdmisionRequests) {
-            if (AdmisionRequests[s].key == k) {
-                delete AdmisionRequests[s]
+        let ServerPersistence = fileMan.load("/ServerData/serverPersistence")
+
+        for (let s in ServerPersistence.Auth.AdmisionRequests) {
+            if (ServerPersistence.Auth.AdmisionRequests[s].key == k) {
+                delete ServerPersistence.Auth.AdmisionRequests[s]
             }
         }
-    }, 2 * 60 * 1000); // only 2 minutes to respond
+        fileMan.save("/ServerData/serverPersistence", JSON.stringify(ServerPersistence))
+
+    }, 2 * 60 * 1000); // only 2 minutes to anwser
 
     setTimeout(() => {
-        AdmisionRequests.push({
+        let ServerPersistence = JSON.parse(fileMan.load("/ServerData/serverPersistence"))        
+        ServerPersistence.Auth.AdmisionRequests.push({
             "key": k,
-            "correctAnswer": AdmisionAnwsers
+            "correctAnswer": translate(AdmisionAnwsers)
         })
 
-        res.json(JSON.stringify({ "q": send, "OK": true }))
+        fileMan.save("/ServerData/serverPersistence", JSON.stringify(ServerPersistence))
+
+        res.json(JSON.stringify({ "q": send, "OK": true })) // send the querrys
 
     }, ChainedMistakes * 500); // register querry
 
-
-    // if (AdmisionState == "NotStarted") {
-    //     AdmisionState = "StartedWaiting"
-    //     setTimeout(() => {
-    //         AdmisionState = "NotStarted"
-    //         AdmisionQuestions = []
-    //         AdmisionAnwsers = []
-    //         console.log("PassQuest timeout")
-
-    //     }, 60 * 2 * 1000) // 2MinsToSolveIt
-    //     setTimeout(() => {
-
-    //         for (let c in password) {
-    //             let q = rand(0, 99, AdmisionQuestions)
-    //             let a = q % (Number.parseInt(password[c]))
-    //             AdmisionQuestions.push(q)
-    //             AdmisionAnwsers.push(a)
-    //         }
-
-    //         let send = []
-
-    //         for (let i in AdmisionQuestions) {
-    //             let translation = []
-    //             for (let c in AdmisionQuestions[i] + "") {
-    //                 translation.push(digitTranslation[Number.parseInt((AdmisionQuestions[i] + "")[c])])
-    //             }
-    //             send.push(translation)
-    //         }
-    //         console.log("PassQuest response")
-
-
-    //         res.json(JSON.stringify({ "q": send, "OK": true }))
-
-    //         AdmisionState = "Sent"
-    //     }, Math.min(1000 * 60 * 5, 1000 * ChainedMistakes));
-    // } else {
-    //     res.json(JSON.stringify({ "q": [], "OK": false }))
-    // }
 })
 
 app.get('/PassAnsw', (req, res) => {
@@ -112,7 +72,7 @@ app.get('/PassAnsw', (req, res) => {
     let authorized = false
 
     for (let s in AdmisionRequests) {
-        if (arrEq(AdmisionRequests[s].correctAnswer, ans)) {
+        if (AdmisionRequests[s].key == req.body.key && arrEq(AdmisionRequests[s].correctAnswer, ans)) {
             authorized = true
         }
     }
@@ -132,7 +92,7 @@ app.get('/PassAnsw', (req, res) => {
 
 app.post('/subscribe', (req, res) => {
     res.status(201).json({});
-
+    // console.log(req.body)
     Push.newSubscription(req.body)
 });
 
@@ -148,6 +108,21 @@ const server = app.listen(app.get('port'), () => {
     console.log(`Express running → PORT ${server.address().port}`);
 });
 
+// var server = https.createServer(options, app);
+
+// var key = fs.readFileSync(__dirname + '/../certs/selfsigned.key');
+// var cert = fs.readFileSync(__dirname + '/../certs/selfsigned.crt');
+// var options = {
+//     key: key,
+//     cert: cert
+// };
+
+// const port = 8000
+
+// server.listen(port, () => {
+//     console.log("server starting on port : " + port)
+// });
+
 function rand(min, max, exclude) {
 
     if (exclude.length == 0) {
@@ -162,8 +137,6 @@ function rand(min, max, exclude) {
     return ret
 }
 
-
-
 function key() {
     const keyLenght = 100;
     const IntToChar = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
@@ -173,22 +146,33 @@ function key() {
     let ret = ""
 
     for (let i = 0; i < keyLenght; i++) {
-        ret += IntToChar[rand(0, IntToChar.length,[])]
+        ret += IntToChar[rand(0, IntToChar.length, [])]
     }
     return ret;
 }
 
-function arrEq(a,b) {
-    if(a.length != b.length) return false
+function arrEq(a, b) {
+    if (a.length != b.length) return false
     for (let i = 0; i < a.length; i++) {
-        if(a[i] != b[i]){
+        if (a[i] != b[i]) {
             return false
         }
     }
     return true
 }
 
-
+let digitTranslation = [95, 955, 1003, 995, 795, 255, 187, 235, 227, 27]
+function translate(word) {
+    let ret = [];
+    for (let i in word) {
+        let translation = []
+        for (let c in word[i] + "") {
+            translation.push(digitTranslation[Number.parseInt((word[i] + "")[c])])
+        }
+        ret.push(translation)
+    }
+    return ret
+}
 
 //const time = 6000;
 

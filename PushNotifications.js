@@ -1,6 +1,7 @@
 const webPush = require('web-push');
 require('dotenv').config({ path: 'variables.env' });
 const fs = require("fs")
+const fileMan = require("./FileManager.js")
 
 
 const PingPeriod = 1000;
@@ -8,10 +9,7 @@ const PingPeriod = 1000;
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
-
 webPush.setVapidDetails('mailto:test@example.com', publicVapidKey, privateVapidKey);
-
-let subscriptions = [];
 
 function ping() {
     nofifyAll_(JSON.stringify({
@@ -21,26 +19,32 @@ function ping() {
 }
 
 function nofifyAll_(payload) {
+    let ServerPersistence = fileMan.load("./ServerData/serverPersistence.json")
+    
     // if (payload.pushPurpose != "Ping")
     //     console.log("push:", payload)
-    for (let i = 0; i < subscriptions.length; i++) {
-        payload.suposedid = subscriptions[i].id
-        webPush.sendNotification(subscriptions[i].link, payload)
+    for (let i = 0; i < ServerPersistence.subscriptions.length; i++) {
+        payload.suposedid = ServerPersistence.subscriptions[i].id
+        webPush.sendNotification(ServerPersistence.subscriptions[i].link, payload)
             .catch(err => {
-                subscriptions.splice(i, 1)
+                ServerPersistence.subscriptions.splice(i, 1)
                 i--
                 console.log("forgoten expired subscription")
-
             })
     }
-    save();
+    // console.log("saving2", ServerPersistence, typeof ServerPersistence)
+
+    fileMan.save("./ServerData/serverPersistence.json", ServerPersistence)
+
 }
 
 function getUnusedId_(){
+    let ServerPersistence = fileMan.load("./ServerData/serverPersistence.json")
+
     let id = 0;
 
-    for (i in subscriptions) {
-        id = Math.max(id, subscriptions[i].id)
+    for (i in ServerPersistence.subscriptions) {
+        id = Math.max(id, ServerPersistence.subscriptions[i].id)
     }
     id++
     console.log("choosen id:", id)
@@ -51,36 +55,40 @@ function getUnusedId_(){
 function newSubscription_(subscription){
     let NewSubs = []
 
+    let ServerPersistence = fileMan.load("./ServerData/serverPersistence.json")
 
-
-    for (let i in subscriptions) {
-        if (subscriptions[i].id != subscription.id && subscriptions[i].link.endpoint != subscription.link.endpoint) {
-            NewSubs.push(subscriptions[i])
+    for (let i in ServerPersistence.subscriptions) {
+        if (ServerPersistence.subscriptions[i].id != ServerPersistence.subscription.id && ServerPersistence.subscriptions[i].link.endpoint != ServerPersistence.subscription.link.endpoint) {
+            NewSubs.push(ServerPersistence.subscriptions[i])
         }
     }
-    subscriptions = NewSubs;
+    ServerPersistence.subscriptions = NewSubs;
 
     // add current link
 
-    subscriptions.push(subscription)
+    //console.log("pushing",subscription)
+    ServerPersistence.subscriptions.push(subscription)
 
-    save()
+    // console.log("saving",ServerPersistence, typeof ServerPersistence)
+
+    fileMan.save("./ServerData/serverPersistence.json", ServerPersistence)
 }
 
-function save() {
-    writeStream = fs.createWriteStream("./ServerData/serverPersistence.json")
-    let data = {
-        "subscriptions": subscriptions
-    }
-    writeStream.write(JSON.stringify(data))
-    writeStream.end();
-}
+// function save() {
+//     fileMan.save("./ServerData/serverPersistence.json",ServerPersistence)
+//     writeStream = fs.createWriteStream("./ServerData/serverPersistence.json")
+//     let data = {
+//         "subscriptions": subscriptions
+//     }
+//     writeStream.write(JSON.stringify(data))
+//     writeStream.end();
+// }
 
-function load() {
-    // todo
-    let data = JSON.parse(fs.readFileSync("./ServerData/serverPersistence.json"))
-    subscriptions = data.subscriptions;
-}
+// function load() {
+//     // todo
+//     let data = JSON.parse(fs.readFileSync("./ServerData/serverPersistence.json"))
+//     subscriptions = data.subscriptions;
+// }
 
 module.exports = {
     "nofifyAll" : (p) => {
@@ -93,7 +101,6 @@ module.exports = {
         return getUnusedId_()
     },
     "init" : () => {
-        load()
         ping()
         tick()
     }

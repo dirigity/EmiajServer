@@ -1,4 +1,1 @@
-{
-    "subscriptions": [
-    ]
-}
+{"subscriptions":[{"link":{"endpoint":"https://fcm.googleapis.com/fcm/send/dSWtbZczN_k:APA91bFsKSuuVkcPtgwmbkkd5Ix1EcWIQJNhS1IrOOnVmuzG7oQsSA5zOCm_lEN3tPQ9VA8RAw0wg0WcnhtbI8hPnbXCF379atV8thfaTpJrA4Fg8VzDWSficnNBzR_TAUHTW94kOjWk","expirationTime":null,"keys":{"p256dh":"BOAFMryLDHsLXNOfdXtwqkVullR7AUR4Mke3boXvBZ718Gu_CErh8B5Rng4u6pkGPZAp-Y74BvTvwCAcGZSprdI","auth":"JWz4C3-ZvLsCAT30bN2BDQ"}},"id":1}]}

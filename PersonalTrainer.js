@@ -1,7 +1,7 @@
-const fs = require("fs")
+const { json } = require("body-parser");
+const fileMan = require("./FileManager.js")
 const Push = require("./PushNotifications")
 
-let LastExTime = 0;
 let lastExCode = 0
 
 let data;
@@ -11,24 +11,31 @@ function tick() {
     let d = new Date()
     //console.log("[Trainer]: aviability ", GetAviability())
     if (GetAviability()) {
-        if (d.getTime() - LastExTime > data.actions[lastExCode].timeOutMins * 60 * 1000) {
-            console.log("[Trainer]: sending push ")
-            lastExCode++
-            lastExCode = lastExCode % data.actions.length;
-            LastExTime = d.getTime()
+        if (d.getTime() - data.liveData.lastTime > data.actions[data.liveData.lastExCode].timeOutMins * 60 * 1000) {
+            //console.log("[Trainer]: sending push ")
+            data.liveData.lastExCode++
+            data.liveData.lastExCode = data.liveData.lastExCode % data.actions.length;
+            data.liveData.lastTime = d.getTime()
             Push.nofifyAll(JSON.stringify({
                 "title": 'Trainer',
-                "content": 'Do ' + data.actions[lastExCode].times + ' ' + data.actions[lastExCode].name,
+                "content": 'Do ' + data.actions[data.liveData.lastExCode].times + ' ' + data.actions[data.liveData.lastExCode].name,
                 "pushPurpose": "Notification"
             }))
+            console.log("[Trainer]: sending push ", data.actions[data.liveData.lastExCode].name)
 
         }
     }
+
+    saveToDisk()
 
     setTimeout(() => {
         tick()
     }, 1 * 60 * 1000);
 
+}
+
+function saveToDisk(){
+    fileMan.save("ServerData/ExerciseRutine.json", JSON.stringify(data));
 }
 
 function GetWeekDay() {
@@ -67,7 +74,7 @@ function GetAviability() {
 
 module.exports = {
     init: () => {
-        data = JSON.parse(fs.readFileSync("./ServerData/ExerciseRutine.json"))
+        data = JSON.parse(fileMan.load("./ServerData/ExerciseRutine.json"))
         tick()
     }
 }
