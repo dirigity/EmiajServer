@@ -3,14 +3,14 @@ require('dotenv').config({ path: 'variables.env' });
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const http = require('http');
 const https = require('https');
-const fs = require('fs');
 
 const fileMan = require("./FileManager.js")
 const log = require('./Logger.js')
 const Push = require("./PushNotifications")
 const Trainer = require("./PersonalTrainer")
+const HttpCompatibility = require("./httpRedirect")
+HttpCompatibility()
 Trainer.init()
 Push.init()
 
@@ -131,12 +131,7 @@ app.get('/GetId', (req, res) => {
 //     console.log(`Express running → PORT ${server.address().port}`);
 // });
 
-const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
-
-httpServer.listen(8000, () => {
-    console.log('HTTP Server running on port 80');
-});
 
 httpsServer.listen(8001, () => {
     console.log('HTTPS Server running on port 443');

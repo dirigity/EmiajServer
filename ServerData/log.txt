@@ -25,3 +25,10 @@
 [2021-04-24 19:42:28]:Someone asked for a question, wait time at: 500
 [2021-04-24 19:54:44]:Someone asked for a question, wait time at: 1000
 [2021-04-24 19:56:39]:Someone asked for a question, wait time at: 0
+[2021-04-24 20:24:7]:Someone asked for a question, wait time at: 500
+[2021-04-24 20:24:11]:Someone asked for a question, wait time at: 1000
+[2021-04-24 20:25:18]:Someone asked for a question, wait time at: 1500
+[2021-04-24 20:25:25]:Someone asked for a question, wait time at: 2000
+[2021-04-24 20:44:51]:Someone asked for a question, wait time at: 2500
+[2021-04-24 20:57:25]:Someone asked for a question, wait time at: 3000
+[2021-04-24 20:57:30]:Someone asked for a question, wait time at: 3500

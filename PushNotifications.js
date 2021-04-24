@@ -1,6 +1,5 @@
 const webPush = require('web-push');
 require('dotenv').config({ path: 'variables.env' });
-const fs = require("fs")
 const fileMan = require("./FileManager.js")
 
 
