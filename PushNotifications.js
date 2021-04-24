@@ -18,21 +18,21 @@ function ping() {
     setTimeout(ping, PingPeriod)
 }
 
-function nofifyAll_(payload) {
+async function nofifyAll_(payload) {
     let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
     
     // if (payload.pushPurpose != "Ping")
     //     console.log("push:", payload)
     for (let i = 0; i < ServerPersistence.subscriptions.length; i++) {
         payload.suposedid = ServerPersistence.subscriptions[i].id
-        webPush.sendNotification(ServerPersistence.subscriptions[i].link, payload)
+        await webPush.sendNotification(ServerPersistence.subscriptions[i].link, payload)
             .catch(err => {
                 ServerPersistence.subscriptions.splice(i, 1)
                 i--
                 console.log("forgoten expired subscription")
             })
     }
-    // console.log("saving2", ServerPersistence, typeof ServerPersistence)
+    //console.log("saving2", ServerPersistence)
 
     fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 

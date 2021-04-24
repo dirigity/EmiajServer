@@ -1,17 +1,33 @@
 require('dotenv').config({ path: 'variables.env' });
 
-const log = require('./Logger.js')
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const http = require('http');
 const https = require('https');
+const fs = require('fs');
+
 const fileMan = require("./FileManager.js")
-
+const log = require('./Logger.js')
 const Push = require("./PushNotifications")
-Push.init()
-
 const Trainer = require("./PersonalTrainer")
 Trainer.init()
+Push.init()
+
+// Certificate HTTPS
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/alvarogonzalez.no-ip.biz/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/alvarogonzalez.no-ip.biz/cert.pem', 'utf8');
+// const ca = fs.readFileSync('/etc/letsencrypt/live/alvarogonzalez.no-ip.biz/chain.pem', 'utf8');
+
+const privateKey = fileMan.load('./Cert/privkey.pem', 'utf8');
+const certificate = fileMan.load('./Cert/cert.pem', 'utf8');
+const ca = fileMan.load('./Cert/chain.pem', 'utf8');
+
+const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca
+};
 
 const app = express();
 
@@ -110,25 +126,21 @@ app.get('/GetId', (req, res) => {
     res.json(JSON.stringify({ "id": ret }))
 });
 
-app.set('port', process.env.PORT || 8000);
-const server = app.listen(app.get('port'), () => {
-    console.log(`Express running → PORT ${server.address().port}`);
+// app.set('port', process.env.PORT || 8000);
+// const server = app.listen(app.get('port'), () => {
+//     console.log(`Express running → PORT ${server.address().port}`);
+// });
+
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(8000, () => {
+    console.log('HTTP Server running on port 80');
 });
 
-// var server = https.createServer(options, app);
-
-// var key = fs.readFileSync(__dirname + '/../certs/selfsigned.key');
-// var cert = fs.readFileSync(__dirname + '/../certs/selfsigned.crt');
-// var options = {
-//     key: key,
-//     cert: cert
-// };
-
-// const port = 8000
-
-// server.listen(port, () => {
-//     console.log("server starting on port : " + port)
-// });
+httpsServer.listen(8001, () => {
+    console.log('HTTPS Server running on port 443');
+});
 
 function rand(min, max, exclude) {
 

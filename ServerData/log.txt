@@ -21,3 +21,7 @@
 [2021-04-23 10:1:26]:Someone asked for a question, wait time at: 0
 [2021-04-23 10:2:10]:Someone asked for a question, wait time at: 0
 [2021-04-23 10:2:27]:Someone asked for a question, wait time at: 0
+[2021-04-24 19:42:17]:Someone asked for a question, wait time at: 0
+[2021-04-24 19:42:28]:Someone asked for a question, wait time at: 500
+[2021-04-24 19:54:44]:Someone asked for a question, wait time at: 1000
+[2021-04-24 19:56:39]:Someone asked for a question, wait time at: 0
