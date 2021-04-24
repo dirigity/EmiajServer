@@ -105,10 +105,10 @@ function touchPadClick(e) {
             res.json().then((data) => {
                 data = JSON.parse(data)
                 // console.log(data.OK)
-                if(data.OK){
+                if (data.OK) {
                     AuthKey = data.aut;
                     InitAuthComunications()
-                }else{
+                } else {
                     alert("incorrect answer")
                     location.reload();
                 }
@@ -227,13 +227,17 @@ async function startLogIn() {
 
     })
 }
+let YTranslationAcc = 10;
+let YTranslationSpeed = 0
+let YTranslation = 0;
 
 function resizePadlock() {
     //let pad = document.getElementById("padlock")
     factor = Math.min(window.innerWidth / 500, window.innerHeight / 300)
     XDelta = (window.innerWidth - 500 * factor) / 2;
     YDelta = (window.innerHeight - 300 * factor) / 2;
-    let transformStr = "matrix(" + factor + ",0,0," + factor + "," + XDelta + "," + YDelta + ")"// matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) "transform: scale(" + factor + ") translate(" + XDelta + "," + YDelta + ")"
+    YTranslation = TerminalState == "Authorized" ? YTranslation + YTranslationSpeed : YTranslation;
+    let transformStr = "matrix(" + factor + ",0,0," + factor + "," + XDelta + "," + (YDelta + YTranslation) + ")"// matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) "transform: scale(" + factor + ") translate(" + XDelta + "," + YDelta + ")"
     document.getElementById("padlock").style.transform = transformStr
 }
 
