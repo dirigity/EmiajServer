@@ -4,8 +4,15 @@ let FULL = Math.pow(2, 11) - 1
 let answer = [FULL, FULL, FULL, FULL]
 function padlockOnLoad() {
 
+    document.getElementById("padlock").style.display = "grid"
+    
+
     currentSel = -1
     let touchPad = document.getElementById("numberInputState")
+
+    touchPad.style.display = "block"
+    touchPad.height = touchPad.clientHeight * 2;
+    touchPad.width = touchPad.clientWidth * 2;
     let ctx = touchPad.getContext('2d')
     ctx.clearRect(0, 0, touchPad.width, touchPad.height)
     ctx.fillStyle = "#00bebe"
@@ -105,8 +112,7 @@ function touchPadClick(e) {
             res.json().then((data) => {
                 data = JSON.parse(data)
                 // console.log(data.OK)
-                if (data.OK) {
-                    AuthKey = data.aut;
+                if (data.status == "OK") {
                     InitAuthComunications()
                 } else {
                     alert("incorrect answer")

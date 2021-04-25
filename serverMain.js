@@ -1,7 +1,8 @@
 require('dotenv').config({ path: 'variables.env' });
 
 const express = require('express');
-const bodyParser = require('body-parser');
+
+
 const path = require('path');
 const https = require('https');
 
@@ -13,6 +14,11 @@ const HttpCompatibility = require("./httpRedirect")
 HttpCompatibility()
 Trainer.init()
 Push.init()
+
+var cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+app.use(cookieParser());
+app.use(bodyParser.json());
 
 // Certificate HTTPS
 // const privateKey = fs.readFileSync('/etc/letsencrypt/live/alvarogonzalez.no-ip.biz/privkey.pem', 'utf8');
@@ -31,7 +37,6 @@ const credentials = {
 
 const app = express();
 
-app.use(bodyParser.json()); // security threat
 
 app.use("/", express.static(path.join(__dirname, 'client')));
 
@@ -104,13 +109,33 @@ app.post('/PassAnsw', (req, res) => {
             "key": Authoritation,
             "time": d.getTime()
         })
+        res.cookie("auth", Authoritation, { maxAge: SesionTime });
+        res.json(JSON.stringify({ "status": "OK" }))
 
-        res.json(JSON.stringify({ "aut": Authoritation, "OK": true }))
     } else {
-        res.json(JSON.stringify({ "aut": "", "OK": false }))
+        res.json(JSON.stringify({ "status": "incorrect response" }))
     }
     fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 
+})
+
+app.get('/logOff', (req, res) => {
+    let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
+
+    let auth = req.cookies.auth
+
+    for (let i = 0; i < ServerPersistence.Auth.AdmitedClients.length; i++) {
+        const element = ServerPersistence.Auth.AdmitedClients[i];
+        if (element.key == auth) {
+            ServerPersistence.Auth.AdmitedClients.splice(i, 1)
+            i--;
+        }
+    }   
+
+    fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
+
+    res.clearCookie('auth');
+    res.send('cookie aut cleared');
 })
 
 app.post('/subscribe', (req, res) => {
