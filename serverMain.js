@@ -13,12 +13,9 @@ const Trainer = require("./PersonalTrainer")
 const HttpCompatibility = require("./httpRedirect")
 HttpCompatibility()
 Trainer.init()
-Push.init()
 
 var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-app.use(cookieParser());
-app.use(bodyParser.json());
 
 // Certificate HTTPS
 // const privateKey = fs.readFileSync('/etc/letsencrypt/live/alvarogonzalez.no-ip.biz/privkey.pem', 'utf8');
@@ -36,6 +33,8 @@ const credentials = {
 };
 
 const app = express();
+app.use(cookieParser());
+app.use(bodyParser.json());
 
 
 app.use("/", express.static(path.join(__dirname, 'client')));
@@ -65,11 +64,10 @@ app.get('/PassQues', (req, res) => {
     setTimeout(() => {
         let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
         ServerPersistence.Auth.ChainedMistakes++
-        let d = new Date();
         ServerPersistence.Auth.AdmisionRequests.push({
             "key": k,
             "correctAnswer": translate(AdmisionAnwsers).map(e => { return e[0] }),
-            "time": d.getTime()
+            "time": Date.now()
         })
 
         fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
@@ -101,13 +99,11 @@ app.post('/PassAnsw', (req, res) => {
 
     if (authorized || true) {
 
-        let d = new Date();
-
         Authoritation = key()
         ServerPersistence.Auth.ChainedMistakes = 0
         ServerPersistence.Auth.AdmitedClients.push({
             "key": Authoritation,
-            "time": d.getTime()
+            "time": Date.now()
         })
         res.cookie("auth", Authoritation, { maxAge: SesionTime });
         res.json(JSON.stringify({ "status": "OK" }))
@@ -130,31 +126,13 @@ app.get('/logOff', (req, res) => {
             ServerPersistence.Auth.AdmitedClients.splice(i, 1)
             i--;
         }
-    }   
+    }
 
     fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
 
     res.clearCookie('auth');
     res.send('cookie aut cleared');
 })
-
-app.post('/subscribe', (req, res) => {
-    res.status(201).json({});
-    // console.log(req.body)
-    Push.newSubscription(req.body)
-});
-
-app.get('/GetId', (req, res) => {
-    let ret = Push.getUnusedId()
-    console.log("New id querry, returning:", ret)
-
-    res.json(JSON.stringify({ "id": ret }))
-});
-
-// app.set('port', process.env.PORT || 8000);
-// const server = app.listen(app.get('port'), () => {
-//     console.log(`Express running → PORT ${server.address().port}`);
-// });
 
 const httpsServer = https.createServer(credentials, app);
 
@@ -216,25 +194,33 @@ function translate(word) {
 
 const TimeToLog = 1000 * 10 * 60;
 const SesionTime = 1000 * 60 * 60 * 20;
+const NotificationTime = 1000 * 60 * 10;
 
 setInterval(() => { // expire sesions and stuff
     let ServerPersistence = fileMan.loadJSON("./ServerData/serverPersistence.json")
-    let d = new Date();
     let NewReq = [];
     for (let i in ServerPersistence.Auth.AdmisionRequests) {
-        if (ServerPersistence.Auth.AdmisionRequests[i].time + TimeToLog > d.getTime()) {
+        if (ServerPersistence.Auth.AdmisionRequests[i].time + TimeToLog > Date.now()) {
             NewReq.push(ServerPersistence.Auth.AdmisionRequests[i])
         }
     }
     ServerPersistence.Auth.AdmisionRequests = NewReq
 
+    let NewNots = [];
+    for (let i in ServerPersistence.Notifications) {
+        if (ServerPersistence.Notifications[i].time + NotificationTime > Date.now()) {
+            NewNots.push(ServerPersistence.Notifications[i])
+        }
+    }
+    ServerPersistence.Auth.AdmisionRequests = NewNots
+
     let NewAuth = [];
     for (let i in ServerPersistence.Auth.AdmitedClients) {
-        if (ServerPersistence.Auth.AdmitedClients[i].time + SesionTime > d.getTime()) {
+        if (ServerPersistence.Auth.AdmitedClients[i].time + SesionTime > Date.now()) {
             NewAuth.push(ServerPersistence.Auth.AdmitedClients[i])
         }
     }
     ServerPersistence.Auth.AdmitedClients = NewAuth
 
     fileMan.saveJSON("./ServerData/serverPersistence.json", ServerPersistence)
-}, 1000);
+}, 10000);

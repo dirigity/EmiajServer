@@ -8,19 +8,16 @@ let data;
 
 function tick() {
 
-    let d = new Date()
     //console.log("[Trainer]: aviability ", GetAviability())
     if (GetAviability()) {
-        if (d.getTime() - data.liveData.lastTime > data.actions[data.liveData.lastExCode].timeOutMins * 60 * 1000) {
+        if (Date.now() - data.liveData.lastTime > data.actions[data.liveData.lastExCode].timeOutMins * 60 * 1000) {
             //console.log("[Trainer]: sending push ")
             data.liveData.lastExCode++
             data.liveData.lastExCode = data.liveData.lastExCode % data.actions.length;
-            data.liveData.lastTime = d.getTime()
-            Push.nofifyAll(JSON.stringify({
-                "title": 'Trainer',
-                "content": 'Do ' + data.actions[data.liveData.lastExCode].times + ' ' + data.actions[data.liveData.lastExCode].name,
-                "pushPurpose": "Notification"
-            }))
+            data.liveData.lastTime = Date.now()
+            Push.nofifyAll( 'Trainer', 
+                'Do ' + data.actions[data.liveData.lastExCode].times + ' ' + data.actions[data.liveData.lastExCode].name
+            )
             console.log("[Trainer]: sending push ", data.actions[data.liveData.lastExCode].name)
 
         }
