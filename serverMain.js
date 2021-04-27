@@ -212,7 +212,7 @@ setInterval(() => { // expire sesions and stuff
             NewNots.push(ServerPersistence.Notifications[i])
         }
     }
-    ServerPersistence.Auth.AdmisionRequests = NewNots
+    ServerPersistence.Notifications = NewNots
 
     let NewAuth = [];
     for (let i in ServerPersistence.Auth.AdmitedClients) {
