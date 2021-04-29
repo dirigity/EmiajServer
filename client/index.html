@@ -40,18 +40,30 @@
 
 
     </div>
+
+    <div>
+
+    </div>
+
+
+
     <!-- <img id="PredatorPalete" src="PredatorStokes.svg" onLoad="padlockOnLoad()" style="display: none;"></img> -->
     <script src="notificationLogin.js"></script>
     <script src="padlock.js"></script>
     <script src="predatorDigits.js"></script>
+    <script src="utils.js"></script>
     <script src="AppBrowser.js"></script>
 
 
     <script>
         window.onload = () => {
-            triggerPushNotification()
-            padlockOnLoad()
-            resizePadlock()
+            if (getCookies().auth == null) {
+                padlockOnLoad()
+                resizePadlock()
+            } else {
+                InitAuthComunications();
+            }
+
         }
         window.onresize = () => {
             resizePadlock()

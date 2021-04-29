@@ -72,3 +72,17 @@
 [2021-04-27 19:21:55]:Someone asked for a question, wait time at: 7000
 [2021-04-27 19:27:7]:Someone asked for a question, wait time at: 7500
 [2021-04-27 19:29:0]:Someone asked for a question, wait time at: 0
+[2021-04-29 8:54:1]:Someone asked for a question, wait time at: 0
+[2021-04-29 8:57:59]:Someone asked for a question, wait time at: 0
+[2021-04-29 8:58:10]:Someone asked for a question, wait time at: 500
+[2021-04-29 9:0:1]:Someone asked for a question, wait time at: 1000
+[2021-04-29 9:0:17]:Someone asked for a question, wait time at: 0
+[2021-04-29 9:1:23]:Someone asked for a question, wait time at: 0
+[2021-04-29 9:1:35]:Someone asked for a question, wait time at: 0
+[2021-04-29 9:2:21]:Someone asked for a question, wait time at: 0
+[2021-04-29 9:2:32]:Someone asked for a question, wait time at: 0
+[2021-04-29 10:9:28]:Someone asked for a question, wait time at: 0
+[2021-04-29 10:10:3]:Someone asked for a question, wait time at: 500
+[2021-04-29 10:15:31]:Someone asked for a question, wait time at: 1000
+[2021-04-29 10:15:36]:Someone asked for a question, wait time at: 0
+[2021-04-29 10:18:7]:Someone asked for a question, wait time at: 500

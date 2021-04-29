@@ -2,10 +2,11 @@ let currentSel = -1;
 
 let FULL = Math.pow(2, 11) - 1
 let answer = [FULL, FULL, FULL, FULL]
+
 function padlockOnLoad() {
 
     document.getElementById("padlock").style.display = "grid"
-    
+
 
     currentSel = -1
     let touchPad = document.getElementById("numberInputState")
@@ -111,7 +112,7 @@ function touchPadClick(e) {
         }).then((res) => {
             res.json().then((data) => {
                 data = JSON.parse(data)
-                // console.log(data.OK)
+                    // console.log(data.OK)
                 if (data.status == "OK") {
                     InitAuthComunications()
                 } else {
@@ -133,12 +134,12 @@ function touchPadClick(e) {
         let closestSeg = -1
         let minDist = 10000000000
         let p = [e.offsetX * 2, e.offsetY * 2]
-        //console.log(p)
+            //console.log(p)
         for (let i = 0; i < segments.length; i++) { // the ponter coords are wrong (maybe /2 or something )
 
             let d = distToSegment(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
-            //console.log(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
-            //console.log("d to " + i + " is " + d)
+                //console.log(p, [segments[i].start.x, segments[i].start.y], [segments[i].end.x, segments[i].end.y])
+                //console.log("d to " + i + " is " + d)
 
             // marker(segments[i].start.x, segments[i].start.y, touchPad.getContext('2d'))
             // marker(segments[i].end.x, segments[i].end.y, touchPad.getContext('2d'))
@@ -218,8 +219,8 @@ async function startLogIn() {
                 Disp.height = Disp.clientHeight * 2
                 Disp.width = Disp.clientWidth * 2
 
-                slowDrawText(t1, Disp.width / 2, Disp.height * 1.1 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => { })
-                slowDrawText(t2, Disp.width / 2, Disp.height * 2.9 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => { })
+                slowDrawText(t1, Disp.width / 2, Disp.height * 1.1 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => {})
+                slowDrawText(t2, Disp.width / 2, Disp.height * 2.9 / 4, Disp.height / 2.1, Disp.width / 1.5, ctx, 30, 0, () => {})
 
                 key = response.key;
                 console.log("key:", key)
@@ -233,17 +234,14 @@ async function startLogIn() {
 
     })
 }
-let YTranslationAcc = 10;
-let YTranslationSpeed = 0
-let YTranslation = 0;
+
 
 function resizePadlock() {
     //let pad = document.getElementById("padlock")
     factor = Math.min(window.innerWidth / 500, window.innerHeight / 300)
     XDelta = (window.innerWidth - 500 * factor) / 2;
     YDelta = (window.innerHeight - 300 * factor) / 2;
-    YTranslation = TerminalState == "Authorized" ? YTranslation + YTranslationSpeed : YTranslation;
-    let transformStr = "matrix(" + factor + ",0,0," + factor + "," + XDelta + "," + (YDelta + YTranslation) + ")"// matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) "transform: scale(" + factor + ") translate(" + XDelta + "," + YDelta + ")"
+    let transformStr = "matrix(" + factor + ",0,0," + factor + "," + XDelta + "," + (YDelta) + ")" // matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY()) "transform: scale(" + factor + ") translate(" + XDelta + "," + YDelta + ")"
     document.getElementById("padlock").style.transform = transformStr
 }
 

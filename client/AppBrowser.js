@@ -1,22 +1,19 @@
-let AuthKey = ""
-
 let TerminalState = "LogIn"
 
 function InitAuthComunications() {
-    console.log("stuff is happening ", AuthKey)
+    console.log("we are authorized")
     TerminalState = "Authorized"
-    repeat(100, resizePadlock)
+    document.getElementById("padlock").style.marginTop = "1000px";
 }
 
-function loadScript() {
-    console.log("loaded")
-}
 
-function repeat(t, f) {
-    f()
-    if (t > 0)
-        setTimeout(() => {
-            repeat(t - 1, f)
-        }, 10);
 
-}
+
+// function repeat(t, f) {
+//     f()
+//     if (t > 0)
+//         setTimeout(() => {
+//             repeat(t - 1, f)
+//         }, 10);
+
+// }
